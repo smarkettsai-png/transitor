@@ -1,0 +1,23 @@
+Pot Tatoeba plugin source notice
+
+Plugin source:
+https://github.com/pot-app/pot-app-translate-plugin-tatoeba
+
+Pinned source commit used by scripts/prepare-tatoeba-plugin.py:
+0864ca679fd4038d588f6f94afde5a1c33085de4 (tag 2.0.1)
+
+The portable build carries the plugin under:
+data/config/com.pot-app.desktop/plugins/translate/plugin.com.pot-app.tatoeba/
+
+The upstream plugin is GPL-3.0. Its original main.js contained an undefined
+variable and attempted to push into a string while parsing API results. This
+build applies a small local parser fix and HTML-escapes returned sentence text.
+The upstream LICENSE is included with the staged plugin, and the top-level
+LICENSE contains the GPLv3 text.
+
+Tatoeba example sentences are retrieved online from the Tatoeba API v1:
+https://api.tatoeba.org/v1/sentences
+
+Tatoeba content is subject to Tatoeba's attribution and Creative Commons
+licensing terms. Review the service's current terms before redistributing
+returned example content.

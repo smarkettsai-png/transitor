@@ -1,0 +1,12 @@
+OpenCC conversion source notice
+
+This build uses opencc-js 1.4.2 to convert Yandex's Simplified Chinese response to Traditional Chinese when the target language is zh_tw.
+
+Project: https://github.com/nk2028/opencc-js
+Package: https://www.npmjs.com/package/opencc-js/v/1.4.2
+License: MIT AND Apache-2.0
+
+opencc-js bundles dictionary data generated from opencc-data. The package's
+THIRD_PARTY_LICENSES.md and LICENSES/Apache-2.0.txt files are retained in the
+installed dependency source tree; this notice records the runtime dependency
+for the portable application.

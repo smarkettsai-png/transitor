@@ -1,0 +1,31 @@
+use log::info;
+
+#[tauri::command]
+pub fn screenshot(x: i32, y: i32) {
+    use crate::portable;
+    use crate::APP;
+    use screenshots::{Compression, Screen};
+    use std::fs;
+    info!("Screenshot screen with position: x={}, y={}", x, y);
+    let screens = Screen::all().unwrap();
+    for screen in screens {
+        let info = screen.display_info;
+        info!("Screen: {:?}", info);
+        if info.x == x && info.y == y {
+            let handle = APP.get().unwrap();
+            let mut app_cache_dir_path =
+                portable::cache_dir(&handle.config().tauri.bundle.identifier)
+                    .expect("Get Cache Dir Failed");
+            if !app_cache_dir_path.exists() {
+                // 创建目录
+                fs::create_dir_all(&app_cache_dir_path).expect("Create Cache Dir Failed");
+            }
+            app_cache_dir_path.push("pot_screenshot.png");
+
+            let image = screen.capture().unwrap();
+            let buffer = image.to_png(Compression::Fast).unwrap();
+            fs::write(app_cache_dir_path, buffer).unwrap();
+            break;
+        }
+    }
+}
