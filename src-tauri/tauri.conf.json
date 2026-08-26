@@ -14,7 +14,7 @@
         "allowlist": {
             "all": false,
             "shell": {
-                "all": true,
+                "all": false,
                 "open": ".*"
             },
             "path": {
@@ -35,31 +35,18 @@
             "http": {
                 "all": true,
                 "request": true,
-                "scope": [
-                    "http://**",
-                    "https://**"
-                ]
+                "scope": ["http://**", "https://**"]
             },
             "os": {
                 "all": true
             },
             "protocol": {
                 "asset": true,
-                "assetScope": [
-                    "$CACHE/**",
-                    "$CONFIG/**",
-                    "$EXE/data/**",
-                    "$RESOURCE/data/**"
-                ]
+                "assetScope": ["$CACHE/**", "$CONFIG/**", "$EXE/data/**", "$RESOURCE/data/**"]
             },
             "fs": {
                 "all": true,
-                "scope": [
-                    "$APPCONFIG/**",
-                    "$APPCACHE/**",
-                    "$EXE/data/**",
-                    "$RESOURCE/data/**"
-                ]
+                "scope": ["$APPCONFIG/**", "$APPCACHE/**", "$EXE/data/**", "$RESOURCE/data/**"]
             },
             "dialog": {
                 "open": true,
@@ -84,20 +71,10 @@
                 "icons/icon.ico"
             ],
             "deb": {
-                "depends": [
-                    "libxdo-dev",
-                    "libxcb1",
-                    "libxrandr2",
-                    "tesseract-ocr"
-                ]
+                "depends": ["libxdo-dev", "libxcb1", "libxrandr2", "tesseract-ocr"]
             },
             "rpm": {
-                "depends": [
-                    "libxdo-dev",
-                    "libxcb1",
-                    "libxrandr2",
-                    "tesseract-ocr"
-                ]
+                "depends": ["libxdo-dev", "libxcb1", "libxrandr2", "tesseract-ocr"]
             },
             "macOS": {
                 "entitlements": null,

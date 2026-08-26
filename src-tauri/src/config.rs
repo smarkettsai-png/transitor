@@ -8,7 +8,7 @@ use tauri_plugin_store::{Store, StoreBuilder};
 
 pub struct StoreWrapper(pub Mutex<Store<Wry>>);
 
-pub fn init_config(app: &mut tauri::App) {
+pub fn init_config(app: &mut tauri::App) -> bool {
     let config_path = portable::config_dir(&app.config().tauri.bundle.identifier)
         .expect("Get Config Dir Failed")
         .join("config.json");
@@ -22,9 +22,21 @@ pub fn init_config(app: &mut tauri::App) {
             info!("Config not found, creating new config");
         }
     }
+    let first_run = store.is_empty();
     app.manage(StoreWrapper(Mutex::new(store)));
+    migrate_language_detection_setting();
     let _ = check_service_available();
     ensure_local_translate_services(&app.config().tauri.bundle.identifier);
+    first_run
+}
+
+fn migrate_language_detection_setting() {
+    if let Some(Value::String(engine)) = get("translate_detect_engine") {
+        if engine == "baidu" {
+            info!("Migrating Baidu language detection to local detection");
+            set("translate_detect_engine", "local");
+        }
+    }
 }
 
 fn check_available(list: Vec<String>, builtin: Vec<&str>, plugin: Vec<String>, key: &str) {
@@ -224,10 +236,4 @@ pub fn set<T: serde::ser::Serialize>(key: &str, value: T) {
     let mut store = state.0.lock().unwrap();
     store.insert(key.to_string(), json!(value)).unwrap();
     store.save().unwrap();
-}
-
-pub fn is_first_run() -> bool {
-    let state = APP.get().unwrap().state::<StoreWrapper>();
-    let store = state.0.lock().unwrap();
-    store.is_empty()
 }

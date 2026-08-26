@@ -86,9 +86,9 @@ fn main() {
             info!("Init Config Store");
             portable::ensure_dirs(&app.config().tauri.bundle.identifier)
                 .expect("Portable mode requires a writable data directory beside the executable");
-            init_config(app);
+            let first_run = init_config(app);
             // Check First Run
-            if is_first_run() {
+            if first_run {
                 // Open Config Window
                 info!("First Run, opening config window");
                 config_window();
@@ -148,7 +148,6 @@ fn main() {
             system_ocr,
             set_proxy,
             unset_proxy,
-            run_binary,
             open_devtools,
             register_shortcut_by_frontend,
             update_tray,

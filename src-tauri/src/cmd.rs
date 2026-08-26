@@ -5,7 +5,6 @@ use crate::portable;
 use crate::StringWrapper;
 use crate::APP;
 use log::{error, info};
-use serde_json::{json, Value};
 use sqlx::{
     sqlite::{SqliteConnectOptions, SqlitePool, SqlitePoolOptions},
     Row,
@@ -387,40 +386,6 @@ pub async fn history_update(
         .await?;
     pool.close().await;
     Ok(())
-}
-
-#[tauri::command]
-pub fn run_binary(
-    plugin_type: String,
-    plugin_name: String,
-    cmd_name: String,
-    args: Vec<String>,
-) -> Result<Value, Error> {
-    #[cfg(target_os = "windows")]
-    use std::os::windows::process::CommandExt;
-    use std::process::Command;
-
-    let config_path = portable::config_dir(&APP.get().unwrap().config().tauri.bundle.identifier)
-        .expect("Get Config Dir Failed");
-    let config_path = config_path.join("plugins");
-    let config_path = config_path.join(plugin_type);
-    let plugin_path = config_path.join(plugin_name);
-
-    #[cfg(target_os = "windows")]
-    let mut cmd = Command::new("cmd");
-    #[cfg(target_os = "windows")]
-    let cmd = cmd.creation_flags(0x08000000);
-    #[cfg(target_os = "windows")]
-    let cmd = cmd.args(["/c", &cmd_name]);
-    #[cfg(not(target_os = "windows"))]
-    let mut cmd = Command::new(&cmd_name);
-
-    let output = cmd.args(args).current_dir(plugin_path).output()?;
-    Ok(json!({
-        "stdout": String::from_utf8_lossy(&output.stdout).to_string(),
-        "stderr": String::from_utf8_lossy(&output.stderr).to_string(),
-        "status": output.status.code().unwrap_or(-1),
-    }))
 }
 
 #[tauri::command]

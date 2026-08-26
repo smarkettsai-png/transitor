@@ -74,4 +74,32 @@ assert.match(sourceAreaSource, /listen\('selection_translate'/);
 const windowSource = await readFile(new URL('../src-tauri/src/window.rs', import.meta.url), 'utf8');
 assert.match(windowSource, /is_focused\(\)[\s\S]*selection_translate/);
 
+const pluginInvokerSource = await readFile(new URL('../src/utils/invoke_plugin.js', import.meta.url), 'utf8');
+assert.equal(pluginInvokerSource.includes('run_binary'), false);
+assert.equal(pluginInvokerSource.includes('run,'), false);
+const rustMainSource = await readFile(new URL('../src-tauri/src/main.rs', import.meta.url), 'utf8');
+assert.equal(rustMainSource.includes('run_binary'), false);
+const rustCommandSource = await readFile(new URL('../src-tauri/src/cmd.rs', import.meta.url), 'utf8');
+assert.equal(rustCommandSource.includes('pub fn run_binary'), false);
+const tauriConfig = JSON.parse(await readFile(new URL('../src-tauri/tauri.conf.json', import.meta.url), 'utf8'));
+assert.equal(tauriConfig.tauri.allowlist.shell.all, false);
+assert.equal(tauriConfig.tauri.allowlist.shell.open, '.*');
+const cargoSource = await readFile(new URL('../src-tauri/Cargo.toml', import.meta.url), 'utf8');
+assert.equal(cargoSource.includes('shell-all'), false);
+assert.match(cargoSource, /shell-open/);
+const languageDetectSource = await readFile(new URL('../src/utils/lang_detect.js', import.meta.url), 'utf8');
+assert.match(languageDetectSource, /translate_detect_engine'\)\) \?\? 'local'/);
+assert.equal(languageDetectSource.includes('fanyi.baidu.com/langdetect'), false);
+const translateConfigSource = await readFile(
+    new URL('../src/window/Config/pages/Translate/index.jsx', import.meta.url),
+    'utf8'
+);
+assert.match(translateConfigSource, /translate_detect_engine', 'local'/);
+assert.equal(translateConfigSource.includes("key='baidu'"), false);
+const configSource = await readFile(new URL('../src-tauri/src/config.rs', import.meta.url), 'utf8');
+assert.match(configSource, /engine == "baidu"[\s\S]*set\("translate_detect_engine", "local"\)/);
+assert.match(configSource, /pub fn init_config\(app: &mut tauri::App\) -> bool/);
+const rustMainConfigSource = await readFile(new URL('../src-tauri/src/main.rs', import.meta.url), 'utf8');
+assert.match(rustMainConfigSource, /let first_run = init_config\(app\);[\s\S]*if first_run/);
+
 console.log('Portable translation regressions: PASS');

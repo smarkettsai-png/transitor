@@ -53,6 +53,7 @@ pub fn lang_detect(text: &str) -> Result<&str, ()> {
         Language::Bokmal,
         Language::Nynorsk,
         Language::Persian,
+        Language::Ukrainian,
     ];
     let detector = LanguageDetectorBuilder::from_languages(&languages).build();
     if let Some(lang) = detector.detect_language_of(text) {
